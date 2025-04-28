@@ -13,7 +13,11 @@ on:
 
 env:
   UV_VERSION: "0.6.5"
+<<<<<<< HEAD
   PYTHONPATH: "pyfinquant"
+=======
+  PYTHONPATH: "src"
+>>>>>>> f38bff42e083b06dc8ac41dd94f52ca75dea0c4c
   PYTHONUNBUFFERED: "1"
   UV_CACHE_DIR: /tmp/.uv-cache
 
@@ -58,7 +62,11 @@ jobs:
       - name: Run tests
         run: |
           mkdir -p test-results
+<<<<<<< HEAD
           uv run pytest tests --cov=pyfinquant --cov-report=xml --cov-report=term-missing --junitxml=test-results/junit.xml
+=======
+          uv run pytest tests --cov=src --cov-report=xml --cov-report=term-missing --junitxml=test-results/junit.xml
+>>>>>>> f38bff42e083b06dc8ac41dd94f52ca75dea0c4c
 
       - name: Minimize cache
         run: uv cache prune --ci
@@ -126,8 +134,13 @@ jobs:
 
       - name: Build and verify package
         run: |
+<<<<<<< HEAD
           uv run --python .build-venv/bin/python ruff check pyfinquant tests
           uv run --python .build-venv/bin/python mypy pyfinquant tests
+=======
+          uv run --python .build-venv/bin/python ruff check src tests
+          uv run --python .build-venv/bin/python mypy src tests
+>>>>>>> f38bff42e083b06dc8ac41dd94f52ca75dea0c4c
           uv run --python .build-venv/bin/python python -m build
           uv run --python .build-venv/bin/python twine check dist/*
 
@@ -145,9 +158,16 @@ jobs:
     needs: build
     runs-on: ubuntu-24.04
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment:
+      name: pypi
+      url: https://pypi.org/p/pyfinquant 
     permissions:
+<<<<<<< HEAD
       contents: read
       id-token: write 
+=======
+      packages: write 
+>>>>>>> f38bff42e083b06dc8ac41dd94f52ca75dea0c4c
 
     steps:
       - name: Download built package artifact
@@ -166,4 +186,8 @@ jobs:
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+<<<<<<< HEAD
         run: uv run twine upload dist/* --verbose
+=======
+        run: uv run twine upload dist/* --verbose
+>>>>>>> f38bff42e083b06dc8ac41dd94f52ca75dea0c4c
