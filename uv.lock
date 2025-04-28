@@ -1,0 +1,69 @@
+{
+  "lockfile_format_version": "1",
+  "sources": [
+    {
+      "name": "PyPI",
+      "url": "https://pypi.org/simple"
+    }
+  ],
+  "requirements": {
+    "numpy": {
+      "version": "1.21.0",
+      "markers": null
+    },
+    "pandas": {
+      "version": "1.3.0",
+      "markers": null
+    },
+    "scipy": {
+      "version": "1.7.0",
+      "markers": null
+    },
+    "matplotlib": {
+      "version": "3.4.0",
+      "markers": null
+    },
+    "yfinance": {
+      "version": "0.2.0",
+      "markers": null
+    },
+    "seaborn": {
+      "version": "0.13.0",
+      "markers": null
+    },
+    "requests": {
+      "version": "2.26.0",
+      "markers": null
+    }
+  },
+  "dev_requirements": {
+    "pytest": {
+      "version": "7.0.0",
+      "markers": null
+    },
+    "pytest-cov": {
+      "version": "3.0.0",
+      "markers": null
+    },
+    "mypy": {
+      "version": "0.910",
+      "markers": null
+    },
+    "sphinx": {
+      "version": "4.0.0",
+      "markers": null
+    },
+    "sphinx-rtd-theme": {
+      "version": "1.0.0",
+      "markers": null
+    },
+    "pre-commit": {
+      "version": "2.0.0",
+      "markers": null
+    },
+    "ruff": {
+      "version": "0.1.0",
+      "markers": null
+    }
+  }
+} 
