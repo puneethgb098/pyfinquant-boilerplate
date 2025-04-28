@@ -6,7 +6,7 @@ on:
 
 env:
   UV_VERSION: "0.6.5"
-  PYTHONPATH: "src"
+  PYTHONPATH: "pyfinquant"
   PYTHONUNBUFFERED: 1
   UV_CACHE_DIR: /tmp/.uv-cache
 
@@ -15,23 +15,38 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
-    env:
-      UV_CACHE_DIR: /tmp/.uv-cache
-    runs-on: ubuntu-24.04
+  test:
+    name: Test Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
+      fail-fast: false
+
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
 
+      - name: Verify Python version is supported
+        run: |
+          supported_versions=$(grep -o 'Programming Language :: Python :: [0-9]\.[0-9]' pyproject.toml | cut -d' ' -f5)
+          if ! echo "$supported_versions" | grep -q "${{ matrix.python-version }}"; then
+            echo "Python version ${{ matrix.python-version }} is not supported according to pyproject.toml"
+            exit 1
+          fi
+          echo "Python version ${{ matrix.python-version }} is supported"
+
       - name: Read Python version from pyproject.toml
         id: python-version
         run: |
-          echo "version=$(grep '^requires-python = ' pyproject.toml | cut -d'"' -f2 | cut -d'>=' -f2)" >> $GITHUB_OUTPUT
+          echo "version=$(grep '^python = ' pyproject.toml | cut -d'"' -f2)" >> $GITHUB_OUTPUT
 
-      - name: Set up Python
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ steps.python-version.outputs.version }}
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+          cache-dependency-path: '**/pyproject.toml'
 
       - name: Set up uv
         run: curl -LsSf https://astral.sh/uv/${{ env.UV_VERSION }}/install.sh | sh
@@ -40,10 +55,10 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /tmp/.uv-cache
-          key: uv-${{ runner.os }}-${{ hashFiles('uv.lock') }}
+          key: uv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('uv.lock') }}
           restore-keys: |
-            uv-${{ runner.os }}-${{ hashFiles('uv.lock') }}
-            uv-${{ runner.os }}
+            uv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('uv.lock') }}
+            uv-${{ runner.os }}-${{ matrix.python-version }}
 
       - name: Install dependencies
         run: uv sync --all-extras --dev --frozen
